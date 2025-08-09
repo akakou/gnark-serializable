@@ -11,13 +11,16 @@ import (
 
 var EcCurve = ecc.BLS12_381
 
-type Serializable interface {
+type Writable interface {
 	WriteTo(io.Writer) (int64, error)
-	ReadFrom(io.Reader) (int64, error)
 	IsNil() bool
 }
 
-func WriteTo[T Serializable](data T) ([]byte, error) {
+type Readable interface {
+	ReadFrom(io.Reader) (int64, error)
+}
+
+func WriteTo[T Writable](data T) ([]byte, error) {
 	if data.IsNil() {
 		return []byte("null"), nil
 	}
@@ -34,7 +37,7 @@ func WriteTo[T Serializable](data T) ([]byte, error) {
 	return []byte(res), nil
 }
 
-func ReadFrom[T Serializable](buf []byte, data T) error {
+func ReadFrom[T Readable](buf []byte, data T) error {
 	if string(buf) == "null" {
 		return nil
 	}

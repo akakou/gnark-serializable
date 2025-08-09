@@ -8,11 +8,11 @@ import (
 
 type ProvingKey struct{ ProvingKey groth16.ProvingKey }
 
-func (pk *ProvingKey) IsNil() bool {
-	return pk == nil
+func (pk ProvingKey) IsNil() bool {
+	return pk.ProvingKey == nil
 }
 
-func (pk *ProvingKey) WriteTo(writer io.Writer) (int64, error) {
+func (pk ProvingKey) WriteTo(writer io.Writer) (int64, error) {
 	return pk.ProvingKey.WriteTo(writer)
 }
 
@@ -20,7 +20,7 @@ func (pk *ProvingKey) ReadFrom(reader io.Reader) (int64, error) {
 	return pk.ProvingKey.ReadFrom(reader)
 }
 
-func (pk *ProvingKey) MarshalJSON() ([]byte, error) {
+func (pk ProvingKey) MarshalJSON() ([]byte, error) {
 	return WriteTo(pk)
 }
 
