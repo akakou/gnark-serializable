@@ -22,10 +22,11 @@ func (circuit *Circuit) Define(api frontend.API) error {
 
 type Json struct {
 	Proof gnarkserializable.Proof
+	CCS   gnarkserializable.ConstraintSystem
 	A     int
 }
 
-func TestProof(t *testing.T) {
+func TestAll(t *testing.T) {
 	var circuit Circuit
 	r1cs, err := frontend.Compile(
 		ecc.BLS12_381.ScalarField(),
@@ -53,9 +54,12 @@ func TestProof(t *testing.T) {
 
 	var res1 Json
 	proof2 := gnarkserializable.Proof{proof}
+	ccs := gnarkserializable.ConstraintSystem{r1cs}
+
 	buf, err := json.Marshal(&Json{
 		Proof: proof2,
 		A:     100,
+		CCS:   ccs,
 	})
 	if err != nil {
 		panic(err)
