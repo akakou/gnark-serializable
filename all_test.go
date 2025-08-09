@@ -23,6 +23,8 @@ func (circuit *Circuit) Define(api frontend.API) error {
 type Json struct {
 	Proof gnarkserializable.Proof
 	CCS   gnarkserializable.ConstraintSystem
+	PK    gnarkserializable.ProvingKey
+	VK    gnarkserializable.VerifyingKey
 	A     int
 }
 
@@ -36,7 +38,7 @@ func TestAll(t *testing.T) {
 		log.Fatalf("compile: %v", err)
 	}
 
-	pk, _, err := groth16.Setup(r1cs)
+	gpk, gvk, err := groth16.Setup(r1cs)
 	if err != nil {
 		log.Fatalf("setup: %v", err)
 	}
@@ -47,7 +49,7 @@ func TestAll(t *testing.T) {
 		log.Fatalf("witness: %v", err)
 	}
 
-	proof, err := groth16.Prove(r1cs, pk, witness)
+	proof, err := groth16.Prove(r1cs, gpk, witness)
 	if err != nil {
 		log.Fatalf("prove: %v", err)
 	}
@@ -55,11 +57,15 @@ func TestAll(t *testing.T) {
 	var res1 Json
 	proof2 := gnarkserializable.Proof{proof}
 	ccs := gnarkserializable.ConstraintSystem{r1cs}
+	pk := gnarkserializable.ProvingKey{gpk}
+	vk := gnarkserializable.VerifyingKey{gvk}
 
 	buf, err := json.Marshal(&Json{
 		Proof: proof2,
 		A:     100,
 		CCS:   ccs,
+		PK:    pk,
+		VK:    vk,
 	})
 	if err != nil {
 		panic(err)
