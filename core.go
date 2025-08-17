@@ -20,7 +20,7 @@ type Readable interface {
 	ReadFrom(io.Reader) (int64, error)
 }
 
-func WriteTo[T Writable](data T) ([]byte, error) {
+func WriteTo(data Writable) ([]byte, error) {
 	if data.IsNil() {
 		return []byte("null"), nil
 	}
@@ -37,7 +37,7 @@ func WriteTo[T Writable](data T) ([]byte, error) {
 	return []byte(res), nil
 }
 
-func ReadFrom[T Readable](buf []byte, data T) error {
+func ReadFrom(buf []byte, data Readable) error {
 	if string(buf) == "null" {
 		return nil
 	}
@@ -56,4 +56,32 @@ func ReadFrom[T Readable](buf []byte, data T) error {
 	_, err = data.ReadFrom(reader)
 
 	return err
+}
+
+type UnsafeWritable interface {
+	WriteTo(io.Writer) (int64, error)
+	WriteRawTo(io.Writer) (int64, error)
+}
+
+type UnsafeReadable interface {
+	ReadFrom(io.Reader) (int64, error)
+	UnsafeReadFrom(io.Reader) (int64, error)
+}
+
+var Unsafe = false
+
+func Write(unsafe UnsafeWritable, io io.Writer) (int64, error) {
+	if Unsafe {
+		return unsafe.WriteRawTo(io)
+	} else {
+		return unsafe.WriteTo(io)
+	}
+}
+
+func Read(unsafe UnsafeReadable, io io.Reader) (int64, error) {
+	if Unsafe {
+		return unsafe.UnsafeReadFrom(io)
+	} else {
+		return unsafe.ReadFrom(io)
+	}
 }

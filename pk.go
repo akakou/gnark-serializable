@@ -13,11 +13,11 @@ func (pk ProvingKey) IsNil() bool {
 }
 
 func (pk ProvingKey) WriteTo(writer io.Writer) (int64, error) {
-	return pk.ProvingKey.WriteTo(writer)
+	return Write(pk.ProvingKey, writer)
 }
 
 func (pk *ProvingKey) ReadFrom(reader io.Reader) (int64, error) {
-	return pk.ProvingKey.ReadFrom(reader)
+	return Read(pk.ProvingKey, reader)
 }
 
 func (pk ProvingKey) MarshalJSON() ([]byte, error) {

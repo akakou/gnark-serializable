@@ -12,12 +12,12 @@ func (vk *VerifyingKey) IsNil() bool {
 	return vk == nil
 }
 
-func (vk *VerifyingKey) WriteTo(writer io.Writer) (int64, error) {
-	return vk.VerifyingKey.WriteTo(writer)
+func (vk VerifyingKey) WriteTo(writer io.Writer) (int64, error) {
+	return Write(vk.VerifyingKey, writer)
 }
 
 func (vk *VerifyingKey) ReadFrom(reader io.Reader) (int64, error) {
-	return vk.VerifyingKey.ReadFrom(reader)
+	return Read(vk.VerifyingKey, reader)
 }
 
 func (vk *VerifyingKey) MarshalJSON() ([]byte, error) {

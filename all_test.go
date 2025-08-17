@@ -29,6 +29,7 @@ type Json struct {
 }
 
 func TestAll(t *testing.T) {
+	gnarkserializable.Unsafe = true
 	var circuit Circuit
 	r1cs, err := frontend.Compile(
 		ecc.BLS12_381.ScalarField(),
